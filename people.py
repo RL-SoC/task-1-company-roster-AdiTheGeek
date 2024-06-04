@@ -20,7 +20,7 @@ class Employee:
     name : str 
     age : int
     ID : int
-    city : int
+    city : str
     branches : list[int] # This is a list of branches (as branch codes) to which the employee may report
     salary : int 
 
@@ -34,50 +34,70 @@ class Employee:
         if salary is not None: self.salary = salary
         else: self.salary = 10_000 
     
-    def change_city(self, new_city:str) -> bool:
+    def change_city(self, new_city:str):
         # Change the city 
+        if new_city != self.city:
+            self.city = new_city
+            return True
+        return False
         # Return true if city change, successful, return false if city same as old city
-        pass
 
-    def migrate_branch(self, new_code:int) -> bool:
+    def migrate_branch(self, new_code:int):
         # Should work only on those employees who have a single 
         # branch to report to. Fail for others.
+        if len(self.branches) == 1:
+            x = branchmap[self.branches[0]]["city"]
+            y = branchmap[new_code]["city"]
+            if x == y:
+                self.branches = list(new_code)
+                return True
+            else:
+                return False
+        else:
+            print("Works at multiple branches")
+            return False
         # Change old branch to new if it is in the same city, else return false.
-        pass
 
-    def increment(self, increment_amt: int) -> None:
+    def increment(self, increment_amt: int):
         # Increment salary by amount specified.
-        pass
-
-
-
+        self.salary = self.salary + increment_amt
 
 
 class Engineer(Employee):
     position : str # Position in organization Hierarchy
-
+    increment_bonus = 1.1
+    promotion_increment = 0.3
+    pre_defined_positions = ["Junior","Senior","Team Lead","Director"]
+    
     def __init__(self, name, age, ID, city,\
                  branchcodes, position= "Junior", salary = None):
         # Call the parent's constructor
         super().__init__(name, age, ID, city, branchcodes, salary)
         
         # Check if position is one of  "Junior", "Senior", "Team Lead", or "Director" 
+        assert position in self.pre_defined_positions, f"Postion {position} is not one of the pre-defined positions"
         # Only then set the position. 
+        self.position = position
 
     
-    def increment(self, amt:int) -> None:
+    def increment(self, amt:int):
         # While other functions are the same for and engineer,
         # and increment to an engineer's salary should add a 10% bonus on to "amt"
-        pass
+        self.salary = self.salary + amt * self.increment_bonus
         
-    def promote(self, position:str) -> bool:
+    def promote(self, position:str):
         # Return false for a demotion or an invalid promotion
         # Promotion can only be to a higher position and
         # it should call the increment function with 30% of the present salary
         # as "amt". Thereafter return True.
-        pass
-
-
+        current_rank = self.pre_defined_positions.index(self.position)
+        future_rank = self.pre_defined_positions.index(position)
+        if future_rank > current_rank:
+            self.position = position
+            self.increment(self.salary*self.promotion_bonus)
+            return True
+        else:
+            return False
 
 class Salesman(Employee):
     """ 
@@ -93,19 +113,50 @@ class Salesman(Employee):
     
     # An extra member variable!
     superior : int # EMPLOYEE ID of the superior this guy reports to
-
-    def __init__(self, ): # Complete all this! Add arguments
-        pass
+    increment_bonus = 1.05
+    promotion_increment = 0.3
+    pre_defined_positions = ["Rep","Manager","Head"]
+    all = []
     
-    # def promote 
-
-    # def increment 
+    def __init__(self, name, age, ID, city,\
+                 branchcodes, position= "Rep", superior = None, salary = None):
+        # Call the parent's constructor
+        super().__init__(name, age, ID, city, branchcodes, salary)
+        
+        # Check if position is one of  "Rep", "Manager", "Head" 
+        assert position in self.pre_defined_positions, f"Postion {position} is not one of the pre-defined positions"
+        # Only then set the position. 
+        self.position = position
+        self.superior = superior
+        Salesman.all.append(self)
+    
+    def increment(self, amt:int):
+        # While other functions are the same for and engineer,
+        # and increment to an engineer's salary should add a 10% bonus on to "amt"
+        self.salary = self.salary + amt* self.increment_bonus
+   
+    def promote(self, position:str):
+        # Return false for a demotion or an invalid promotion
+        # Promotion can only be to a higher position and
+        # it should call the increment function with 30% of the present salary
+        # as "amt". Thereafter return True.
+        current_rank = self.pre_defined_positions.index(self.position)
+        future_rank = self.pre_defined_positions.index(position)
+        if future_rank > current_rank:
+            self.position = position
+            self.increment(self.salary*self.promotion_bonus)
+            return True
+        else:
+            return False
 
     def find_superior(self) -> tuple[int, str]:
-        # Return the employee ID and name of the superior
-        # Report a tuple of None, None if no superior.
-        pass
+        if self.superior is None:
+            return None  # Handle cases where no superior is assigned
 
+        # Assuming a dictionary-based lookup for efficiency
+        else:
+            superior = self.__class__.all.get(self.superior)
+            return superior.id, superior.name
     def add_superior(self) -> bool:
         # Add superior of immediately higher rank.
         # If superior doesn't exist return false,
@@ -115,12 +166,3 @@ class Salesman(Employee):
     def migrate_branch(self, new_code: int) -> bool:
         # This should simply add a branch to the list; even different cities are fine
         pass
-
-    
-
-
-
-
-
-    
-    
