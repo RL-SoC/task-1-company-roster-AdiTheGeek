@@ -14,8 +14,8 @@ if __name__ == "__main__":  # Equivalent to int main() {} in C++.
 
         if last_input == 1:
             name = input("Name:")
-            age = input("Age:")
-            ID = input("ID:")
+            age = int(input("Age:"))
+            ID = int(input("ID:"))
             city = input("City:")
             branchcodes = input("Branch(es):")
             # How will you conver this to a list, given that
@@ -28,23 +28,23 @@ if __name__ == "__main__":  # Equivalent to int main() {} in C++.
             engineer = Engineer(name,age,ID,city,branchcodes,position,salary) # Change this
 
             engineer_roster.append(engineer) # Add him to the list! See people.py for definiton
-            
+            print(engineer_roster)
         
         elif last_input == 2:
             name = input("Name:")
-            age = input("Age:")
-            ID = input("ID:")
+            age = int(input("Age:"))
+            ID = int(input("ID:"))
             city = input("City:")
             branchcodes = input("Branch(es):")
             branchcodes = [int(inp.strip()) for inp in branchcodes.split(",")]
             position = input("Position:")
             superior = input("Enter superior ID:")
-            salary = input("Salary:")
+            salary = int(input("Salary:"))
             # Create a new Salesperson with given details.
             salesman = Salesman(name,age,ID,city,branchcodes,position,superior,salary) 
 
             sales_roster.append(salesman) # Add him to the list! See people.py for definiton
-            pass
+        
 
         elif last_input == 3:
             ID = int(input("ID: "))
@@ -52,11 +52,11 @@ if __name__ == "__main__":  # Equivalent to int main() {} in C++.
             
             found_employee = None
             for employee in engineer_roster + sales_roster:
-                if employee.ID == int(ID):
+                if int(employee.ID) == int(ID):
                     found_employee = employee
                     break
             
-            if not found_employee: print("No such employee")
+            if  not found_employee: print("No such employee")
             else:
                 print(f"Name: {found_employee.name} and Age: {found_employee.age}")
                 print(f"City of Work: {found_employee.city}")
@@ -65,11 +65,14 @@ if __name__ == "__main__":  # Equivalent to int main() {} in C++.
                 ## which the employee reports as a comma separated list
                 ## eg> Branches: Goregaon,Fort
                 branch_names = []
-                for i in found_employee.branchcodes:
+                for i in found_employee.branches:
                     branch_names.append(branchmap[i]["name"])
-                print(f"Branches: " + "{i}," for i in branch_names )
+
+                x = ", ".join(branch_names)
+                print(f"Branches: {x}" )
                 
                 print(f"Salary: {found_employee.salary}")
+                print(f"Position: {found_employee.position}")
 
         elif last_input == 4:
             #### NO IF ELSE ZONE ######################################################
@@ -81,8 +84,9 @@ if __name__ == "__main__":  # Equivalent to int main() {} in C++.
 
             found_employee = None
             for employee in engineer_roster + sales_roster:
-                if employee.ID == int(ID):
+                if int(employee.ID) == int(ID):
                     found_employee = employee
+                    print(found_employee)
                     break
             
             found_employee.migrate_branch(new_branch)
@@ -93,7 +97,7 @@ if __name__ == "__main__":  # Equivalent to int main() {} in C++.
             # promote employee to next position
             found_employee = None
             for employee in engineer_roster + sales_roster:
-                if employee.ID == int(ID):
+                if int(employee.ID) == int(ID):
                     found_employee = employee
                     break
             x = found_employee.pre_defined_positions.index(found_employee.position)
@@ -106,7 +110,7 @@ if __name__ == "__main__":  # Equivalent to int main() {} in C++.
             # Increment salary of employee.
             found_employee = None
             for employee in engineer_roster + sales_roster:
-                if employee.ID == int(ID):
+                if int(employee.ID) == int(ID):
                     found_employee = employee
                     break
             
@@ -117,7 +121,7 @@ if __name__ == "__main__":  # Equivalent to int main() {} in C++.
             # Print superior of the sales employee.
             found_employee = None
             for employee in sales_roster:
-                if employee.ID == int(ID):
+                if int(employee.ID) == int(ID):
                     found_employee = employee
                     break
             
@@ -130,11 +134,11 @@ if __name__ == "__main__":  # Equivalent to int main() {} in C++.
 
             found_employee = None
             for employee in sales_roster:
-                if employee.ID == int(ID_S):
+                if int(employee.ID) == int(ID_E):
                     found_employee = employee
                     break
             
-            found_employee.add_superior(ID_E)
+            found_employee.add_superior(ID_S)
 
         else:
             raise ValueError("No such query number defined")
