@@ -149,20 +149,38 @@ class Salesman(Employee):
         else:
             return False
 
-    def find_superior(self) -> tuple[int, str]:
+    def find_superior(self):
         if self.superior is None:
             return None  # Handle cases where no superior is assigned
 
         # Assuming a dictionary-based lookup for efficiency
         else:
             superior = self.__class__.all.get(self.superior)
-            return superior.id, superior.name
-    def add_superior(self) -> bool:
+            return superior.ID, superior.name
+            
+    def add_superior(self, superior_ID:int):
         # Add superior of immediately higher rank.
         # If superior doesn't exist return false,
-        pass
+        x = self.pre_defined_positions.index(self.position)
+        assigned_superior = self.__class__.all.get(superior_ID)
+        y = self.pre_defined_positions.index(assigned_superior.position)
+        if y > x:
+            self.superior = superior_ID
+            return True
+        else:
+            return False
 
 
-    def migrate_branch(self, new_code: int) -> bool:
+    def migrate_branch(self, new_code: int):
         # This should simply add a branch to the list; even different cities are fine
-        pass
+        x = 0
+        for i in self.branchmap:
+            if new_code == i:
+                x = 1
+        if x == 0:
+            self.branches.append(new_code)
+            return True
+        else:
+            print("The employee already works in the newly assigned branch.")
+            return False
+
